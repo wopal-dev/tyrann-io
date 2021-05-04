@@ -1,4 +1,4 @@
-import { MethodsOf, Operation, RequestOf, TyrannApis, Request, ResponseOf } from './types'
+import { MethodsOf, Operation, RequestOf, TyrannApis, Request, ResponseOf, BaseMethods } from './types'
 import { isLeft } from 'fp-ts/Either'
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 import * as t from 'io-ts'
@@ -133,8 +133,30 @@ export const tyrann = <Apis extends TyrannApis>(
     } as CallResponse<Exclude<Path[Methods], undefined>>;
   };
 
+  const withMethod = <Method extends BaseMethods>(m: Method) =>
+    <Name extends Names, Path extends Apis[Name]>(
+      name: Name,
+      request: RequestOf<Exclude<Path[Method], undefined>>,
+      localOptions: TyrannOptions = options, 
+    ) => {
+      return call(
+        createCall(
+          m,
+          name,
+          request,
+        ),
+        localOptions,
+      )
+    };
+
   return {
     createCall,
     call,
+    get: withMethod('get'),
+    post: withMethod('post'),
+    put: withMethod('put'),
+    delete: withMethod('delete'),
+    options: withMethod('options'),
+    patch: withMethod('patch'),
   }
 }

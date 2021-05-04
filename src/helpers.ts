@@ -1,5 +1,4 @@
 import * as t from 'io-ts';
-import { Context } from 'io-ts';
 
 export type OmittableKeys<A extends {}> = {
   [K in keyof A]: undefined extends A[K] ? K : null extends A[K] ? K : undefined

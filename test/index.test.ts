@@ -252,6 +252,18 @@ describe('tyrann-io', () => {
 
   });
 
+  it('can get', async () => {
+    await apis.get(
+      "/brotli",
+      {
+        query: {
+          brotli: "123",
+          method: "456",
+        }
+      }
+    );
+  })
+
   it('can call', async () => {
     const r = {
       response: {

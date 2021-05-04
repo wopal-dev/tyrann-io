@@ -1,7 +1,7 @@
 import * as t from 'io-ts'
 import * as E from 'io-ts/Encoder'
 
-export type BaseMethods = "get" | "post" | "put" | "delete";
+export type BaseMethods = "get" | "post" | "put" | "delete" | "options" | "patch";
 
 export type TyrannApis = {
   [path in string]: Path;
@@ -12,6 +12,9 @@ export interface Path {
   post?: Operation;
   put?: Operation;
   delete?: Operation;
+  trace?: Operation;
+  options?: Operation;
+  patch?: Operation;
 }
 
 export interface Operation {
