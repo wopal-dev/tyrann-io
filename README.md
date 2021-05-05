@@ -238,11 +238,11 @@ Now, you have a typed result `data` and you can confidently believe it is matche
 3. `omittable`
 
     ```typescript
-    import { omittalbe } from 'tyrann-io/helpers';
-    const defaultable = (a: t.Type): t.Type;
+    import { omittable } from 'tyrann-io/helpers';
+    const omittable = (a: t.Type): t.Type;
     ```
 
-    `defaultable` takes a type `A` and returns its nullable counterpart `A | undefined | null`.
+    `omittable` takes a type `A` and returns its nullable counterpart `A | undefined | null`.
 
 4. `defaultable`
 
@@ -255,10 +255,10 @@ Now, you have a typed result `data` and you can confidently believe it is matche
 
     ```typescript
     const t0 = t.type({
-      x: h.omittable(t.number),
+      x: omittable(t.number),
     });
 
-    const dft0 = h.defaultable(
+    const dft0 = defaultable(
       t0,
       {
         x: 123,
