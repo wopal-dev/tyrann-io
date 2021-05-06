@@ -10,7 +10,8 @@
 
 ## Prerequisites
 
-- node >=10
+- ES6
+- TypeScript >= 4.1
 
 ## Install
 
