@@ -23,6 +23,9 @@ yarn add tyrann-io
 1. Describe your data
 
 ```typescript
+import { tyrann } from 'tyrann-io';
+import * as t from 'io-ts';
+
 const apis = tyrann({
   '/user/{id}': {
     get: {
@@ -41,7 +44,7 @@ const apis = tyrann({
     post: {
       body: t.type({
         username: t.string,
-        password: t.password,
+        password: t.string,
       }),
       response: {
         200: t.type({
