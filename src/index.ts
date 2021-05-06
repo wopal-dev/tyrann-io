@@ -104,11 +104,11 @@ export const tyrann = <Apis extends TyrannApis>(
       localOptions.axiosRequestConfig() : localOptions.axiosRequestConfig;
 
     const localAxiosRequestConfigs: AxiosRequestConfig = {
+      ...axiosRequestConfig,
+      ...localRequestConfig,
       url,
       method,
       data: body,
-      ...axiosRequestConfig,
-      ...localRequestConfig,
     };
 
     const response = await (localOptions.instance ?? instance).request(localAxiosRequestConfigs);
