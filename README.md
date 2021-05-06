@@ -51,6 +51,7 @@ const apis = tyrann({
           successful: t.boolean,
         }),
         403: t.type({
+          successful: t.boolean,
           reason: t.string,
         })
       },
@@ -78,7 +79,7 @@ const response = await apis.get(
 console.log(response[200]);
 {
   "name": "John Doe",
-  "address": "No where"
+  "address": "Nowhere"
 }
 ```
 
