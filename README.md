@@ -282,7 +282,7 @@ Now, you have a typed result `data` and you can confidently believe it is matche
         .min(5, 'Too short. ');
     ```
 
-    A string with chainable validations, useful in form validation. The input is string is first checked with 'isString', then checked by chained validators.
+    A string with chainable validations, useful in form validation. The input is string is first checked with 'isString', then checked by chained validators. Check the methods below.
 
     ```typescript
     refine(refiner: (s: string) => boolean, message?: string)
@@ -290,17 +290,17 @@ Now, you have a typed result `data` and you can confidently believe it is matche
     Chain a custom validator. This validator should return `isValid`.
 
     ```typescript
-    string.min(n: number, message?: string)
+    min(n: number, message?: string)
     ```
     Check the minimum length.
 
     ```typescript
-    string.max(n: number, message?: string)
+    max(n: number, message?: string)
     ```
     Check the maximum length.
 
     ```typescript
-    string.matches(regExp: RegExp, message?: string)
+    matches(regExp: RegExp, message?: string)
     ```
     Check the string against `RegExp.test`.
 
