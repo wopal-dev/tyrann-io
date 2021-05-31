@@ -274,6 +274,37 @@ Now, you have a typed result `data` and you can confidently believe it is matche
     // { x: 123 }
     ```
 
+5. `string`
+    ```typescript
+    import { string } from 'tyrann-io/helpers';
+    const minLengthString = h
+        .string()
+        .min(5, 'Too short. ');
+    ```
+
+    A string with chainable validations, useful in form validation. The input is string is first checked with 'isString', then checked by chained validators.
+
+    ```typescript
+    refine(refiner: (s: string) => boolean, message?: string)
+    ```
+    Chain a custom validator. This validator should return `isValid`.
+
+    ```typescript
+    string.min(n: number, message?: string)
+    ```
+    Check the minimum length.
+
+    ```typescript
+    string.max(n: number, message?: string)
+    ```
+    Check the maximum length.
+
+    ```typescript
+    string.matches(regExp: RegExp, message?: string)
+    ```
+    Check the string against `RegExp.test`.
+
+
 ## Author
 
 👤 **Chenyu Wang**

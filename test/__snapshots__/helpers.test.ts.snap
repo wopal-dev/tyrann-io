@@ -1,0 +1,73 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`helpers can validate 1`] = `
+Object {
+  "_tag": "Right",
+  "right": "123456",
+}
+`;
+
+exports[`helpers can validate 2`] = `
+Object {
+  "_tag": "Left",
+  "left": Array [
+    Object {
+      "context": Array [
+        Object {
+          "actual": "1234",
+          "key": "",
+          "type": StringValidator {
+            "decode": [Function],
+            "encode": [Function],
+            "is": [Function],
+            "name": "string",
+            "validate": [Function],
+            "validates": Array [
+              [Function],
+              [Function],
+            ],
+          },
+        },
+      ],
+      "message": "Too short. ",
+      "value": "1234",
+    },
+  ],
+}
+`;
+
+exports[`helpers can validate 3`] = `
+Object {
+  "_tag": "Left",
+  "left": Array [
+    Object {
+      "context": Array [
+        Object {
+          "actual": "123456",
+          "key": "",
+          "type": StringValidator {
+            "decode": [Function],
+            "encode": [Function],
+            "is": [Function],
+            "name": "string",
+            "validate": [Function],
+            "validates": Array [
+              [Function],
+              [Function],
+            ],
+          },
+        },
+      ],
+      "message": "Too long. ",
+      "value": "123456",
+    },
+  ],
+}
+`;
+
+exports[`helpers can validate 4`] = `
+Object {
+  "_tag": "Right",
+  "right": "1234",
+}
+`;
