@@ -71,3 +71,12 @@ Object {
   "right": "1234",
 }
 `;
+
+exports[`helpers can validate 5`] = `
+Object {
+  "_tag": "Right",
+  "right": Object {
+    "new_email": "wangchenyu2017@gmail.com",
+  },
+}
+`;
