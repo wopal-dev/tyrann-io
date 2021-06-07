@@ -103,6 +103,44 @@ export class StringValidator extends Validator<string> {
   }
 }
 
+export class BooleanValidator extends Validator<boolean> {
+  constructor() {
+    super(
+      'number',
+      (u): u is boolean => typeof u === 'boolean',
+      t.identity,
+    )
+  }
+
+  refine(refiner: (s: boolean) => boolean, message?: string): BooleanValidator {
+    return super.refine(refiner, message) as BooleanValidator;
+  }
+
+  clone(v: BooleanValidator) {
+    const c = new BooleanValidator();
+    c.validates = v.validates;
+    return c;
+  }
+
+  // This never raises
+  cast() {
+    const c = this.clone(this);
+    c.validates = [
+      (input: unknown): Either<t.Errors, boolean> => 
+        t.success(Boolean(input))
+    ];
+    return c;
+  }
+
+  true(message?: string) {
+    return this.refine((s) => s === true, message);
+  }
+
+  false(message?: string) {
+    return this.refine((s) => s === false, message);
+  }
+}
+
 export class NumberValidator extends Validator<number> {
   constructor() {
     super(

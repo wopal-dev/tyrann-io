@@ -180,6 +180,34 @@ describe('helpers', () => {
       a: 123,
       b: 12345,
     }))).toBe(false);
+
+    const booleanType = h.boolean().true();
+
+    expect(
+      isRight(booleanType.decode(true))
+    ).toBe(true);
+
+    expect(
+      isRight(booleanType.decode(false))
+    ).toBe(false);
+
+    const castBooleanType = h.boolean().cast().true();
+
+    expect(
+      isRight(castBooleanType.decode(1))
+    ).toBe(true);
+
+    expect(
+      isRight(castBooleanType.decode(0))
+    ).toBe(false);
+
+    expect(
+      isRight(castBooleanType.decode(0))
+    ).toBe(false);
+
+    expect(
+      isRight(castBooleanType.decode(''))
+    ).toBe(false);
   });
 
 });
