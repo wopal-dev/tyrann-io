@@ -67,6 +67,76 @@ describe('helpers', () => {
     expect(
       isLeft(maxArray.decode([1, 2, 3]))
     ).toBe(true);
+
+    expect(
+      isLeft(maxArray.decode(undefined))
+    ).toBe(true);
+
+    const number = h.number();
+
+    expect(
+      isLeft(number.decode("123123")),
+    ).toBe(true);
+
+    expect(
+      isRight(number.decode(123123)),
+    ).toBe(true);
+
+    const maxNumber = h.number().max(100);
+
+    expect(
+      isLeft(maxNumber.decode(101)),
+    ).toBe(true);
+
+    expect(
+      isRight(maxNumber.decode(100)),
+    ).toBe(true);
+
+    expect(
+      isRight(maxNumber.decode(50)),
+    ).toBe(true);
+
+    const minNumber = h.number().min(100);
+
+    expect(
+      isLeft(minNumber.decode(99)),
+    ).toBe(true);
+
+    expect(
+      isRight(minNumber.decode(100)),
+    ).toBe(true);
+
+    expect(
+      isRight(minNumber.decode(101)),
+    ).toBe(true);
+
+    const castNumber = h.number().cast().min(100);
+
+    expect(
+      isRight(castNumber.decode('101')),
+    ).toBe(true);
+
+    expect(
+      isLeft(castNumber.decode('xyz')),
+    ).toBe(true);
+
+    expect(
+      isRight(castNumber.decode(101)),
+    ).toBe(true);
+
+    const integerNumber = h.number().integer();
+
+    expect(
+      isRight(integerNumber.decode(101)),
+    ).toBe(true);
+
+    expect(
+      isRight(integerNumber.decode(Number.MAX_SAFE_INTEGER)),
+    ).toBe(true);
+
+    expect(
+      isLeft(integerNumber.decode(Number.MAX_SAFE_INTEGER + 1)),
+    ).toBe(true);
   });
 
 });

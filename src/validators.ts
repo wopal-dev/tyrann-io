@@ -31,6 +31,8 @@ export class Validator<A> extends t.Type<A> {
       e = validate(u, c);
       if (isLeft(e)) {
         return e;
+      } else {
+        u = e.right;
       }
     }
     return e!;
@@ -98,6 +100,52 @@ export class StringValidator extends Validator<string> {
 
   matches(regExp: RegExp, message?: string) {
     return this.refine((s) => regExp.test(s), message);
+  }
+}
+
+export class NumberValidator extends Validator<number> {
+  constructor() {
+    super(
+      'number',
+      (u): u is number => typeof u === 'number',
+      t.identity
+    )
+  }
+
+  clone(v: NumberValidator) {
+    const c = new NumberValidator();
+    c.validates = v.validates;
+    return c;
+  }
+
+  // Clear all validates, casting anything castable
+  cast() {
+    const c = this.clone(this);
+    c.validates = [
+      (input: unknown, context: t.Context): Either<t.Errors, number> => 
+        !Number.isNaN(Number(input)) ? t.success(Number(input)) : t.failure(input, context),
+    ];
+    return c;
+  }
+
+  min(n: number, message?: string) {
+    return this.refine((s) => s >= n, message);
+  }
+
+  max(n: number, message?: string) {
+    return this.refine((s) => s <= n, message);
+  }
+
+  positive(message?: string) {
+    return this.min(0, message);
+  }
+
+  negative(message?: string) {
+    return this.max(0, message);
+  }
+
+  integer(message?: string) {
+    return this.refine((s) => Number.isSafeInteger(s), message);
   }
 }
 
