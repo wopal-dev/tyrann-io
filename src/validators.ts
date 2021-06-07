@@ -143,11 +143,11 @@ export class NumberValidator extends Validator<number> {
   }
 
   positive(message?: string) {
-    return this.min(0, message);
+    return this.refine((s) => s > 0, message);
   }
 
   negative(message?: string) {
-    return this.max(0, message);
+    return this.refine((s) => s < 0, message);
   }
 
   integer(message?: string) {
@@ -194,4 +194,31 @@ export class ArrayValidator<C extends t.Mixed> extends Validator<t.TypeOf<C>[]> 
   required(message?: string) {
     return this.min(1, message);
   }
+}
+
+export class InterfaceValidator<A extends {}> extends Validator<A> {
+  interfaceType: t.Type<A>;
+
+  constructor(
+    inferfaceType: t.Type<A>,
+  ) {
+    super(
+      'interface',
+      (u): u is A => inferfaceType.is(u),
+      (u) => inferfaceType.encode(u),
+    );
+
+    this.interfaceType = inferfaceType;
+  }
+
+  clone(v: InterfaceValidator<A>) {
+    const c = new InterfaceValidator<A>(v.interfaceType);
+    c.validates = v.validates;
+    return c;
+  }
+
+  refine(refiner: (s: A) => boolean, message?: string): InterfaceValidator<A> {
+    return super.refine(refiner, message) as InterfaceValidator<A>;
+  }
+
 }

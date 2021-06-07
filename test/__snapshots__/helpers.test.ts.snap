@@ -80,3 +80,32 @@ Object {
   },
 }
 `;
+
+exports[`helpers can validate 6`] = `
+Object {
+  "_tag": "Left",
+  "left": Array [
+    Object {
+      "context": Array [
+        Object {
+          "actual": "xyz",
+          "key": "",
+          "type": NumberValidator {
+            "decode": [Function],
+            "encode": [Function],
+            "is": [Function],
+            "name": "number",
+            "validate": [Function],
+            "validates": Array [
+              [Function],
+              [Function],
+            ],
+          },
+        },
+      ],
+      "message": "は有効な整数を入力してください。",
+      "value": "xyz",
+    },
+  ],
+}
+`;

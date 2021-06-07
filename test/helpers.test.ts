@@ -145,6 +145,41 @@ describe('helpers', () => {
     expect(
       isLeft(omittableString.decode('1234')),
     ).toBe(true);
+
+    const integerCast = h.number()
+      .cast(`は有効な整数を入力してください。`)
+      .integer(`は有効な整数を入力してください。`)
+
+    expect(integerCast.decode('xyz'))
+      .toMatchSnapshot();
+
+    const interfaceType = h.type({
+      a: t.number,
+    });
+
+    expect(isRight(interfaceType.decode({
+      a: 114514
+    }))).toBe(true);
+
+    expect(isRight(interfaceType.decode({
+      a: "123123"
+    }))).toBe(false);
+
+    const refinedInterfaceType = h.type({
+      a: t.number,
+      b: t.number,
+    })
+      .refine((s) => s.a === s.b);
+
+    expect(isRight(refinedInterfaceType.decode({
+      a: 123,
+      b: 123,
+    }))).toBe(true);
+    
+    expect(isRight(refinedInterfaceType.decode({
+      a: 123,
+      b: 12345,
+    }))).toBe(false);
   });
 
 });
