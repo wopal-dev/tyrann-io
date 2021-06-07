@@ -137,6 +137,14 @@ describe('helpers', () => {
     expect(
       isLeft(integerNumber.decode(Number.MAX_SAFE_INTEGER + 1)),
     ).toBe(true);
+
+    const omittableString = h.omittable(
+      h.string().min(5, 'Too short')
+    );
+
+    expect(
+      isLeft(omittableString.decode('1234')),
+    ).toBe(true);
   });
 
 });

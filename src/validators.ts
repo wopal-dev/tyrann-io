@@ -112,6 +112,10 @@ export class NumberValidator extends Validator<number> {
     )
   }
 
+  refine(refiner: (s: number) => boolean, message?: string): NumberValidator {
+    return super.refine(refiner, message) as NumberValidator;
+  }
+
   clone(v: NumberValidator) {
     const c = new NumberValidator();
     c.validates = v.validates;
@@ -119,11 +123,13 @@ export class NumberValidator extends Validator<number> {
   }
 
   // Clear all validates, casting anything castable
-  cast() {
+  cast(message?: string) {
     const c = this.clone(this);
     c.validates = [
       (input: unknown, context: t.Context): Either<t.Errors, number> => 
-        !Number.isNaN(Number(input)) ? t.success(Number(input)) : t.failure(input, context),
+        !Number.isNaN(Number(input))
+        ? t.success(Number(input))
+        : t.failure(input, context, message),
     ];
     return c;
   }
