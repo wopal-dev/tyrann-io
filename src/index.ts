@@ -160,3 +160,5 @@ export const tyrann = <Apis extends TyrannApis>(
     patch: withMethod('patch'),
   }
 }
+
+export * from './helpers';
