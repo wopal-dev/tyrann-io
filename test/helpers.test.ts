@@ -208,6 +208,16 @@ describe('helpers', () => {
     expect(
       isRight(castBooleanType.decode(''))
     ).toBe(false);
+
+    const requiredStringInterfaceType = h.type({
+      s: h.string().required('required'),
+    });
+
+    expect(
+      isLeft(requiredStringInterfaceType.decode({
+        s: ''
+      }))
+    ).toBe(true);
   });
 
 });

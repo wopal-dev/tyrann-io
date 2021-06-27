@@ -7,12 +7,13 @@ export type Validate<A, I> = (input: I, context: t.Context) => Either<t.Errors, 
 export class Validator<A> extends t.Type<A> {
   validates: Validate<A, any>[] = [
     (input: unknown, context: t.Context): Either<t.Errors, A> => 
-      this.is(input) ? t.success(input) : t.failure(input, context),
+      this.baseValidate(input, context),
   ];
 
   constructor(
     name: string,
     is: t.Is<A>,
+    public baseValidate: Validate<A, any>,
     encode: Encode<A, A>
   ) {
     super(
@@ -42,6 +43,7 @@ export class Validator<A> extends t.Type<A> {
     const c = new Validator(
       v.name,
       v.is,
+      v.baseValidate,
       v.encode,
     );
     c.validates = v.validates;
@@ -68,7 +70,8 @@ export class StringValidator extends Validator<string> {
     super(
       'string',
       (u): u is string => typeof u === 'string',
-      t.identity
+      t.string.validate,
+      t.identity,
     )
   }
 
@@ -108,6 +111,7 @@ export class BooleanValidator extends Validator<boolean> {
     super(
       'number',
       (u): u is boolean => typeof u === 'boolean',
+      t.boolean.validate,
       t.identity,
     )
   }
@@ -146,7 +150,8 @@ export class NumberValidator extends Validator<number> {
     super(
       'number',
       (u): u is number => typeof u === 'number',
-      t.identity
+      t.number.validate,
+      t.identity,
     )
   }
 
@@ -201,6 +206,7 @@ export class ArrayValidator<C extends t.Mixed> extends Validator<t.TypeOf<C>[]> 
     super(
       `array<${item.name}>`,
       (u): u is Array<t.TypeOf<C>> => this.arrayType.is(u),
+      t.array(item).validate,
       (u) => this.arrayType.encode(u),
     );
 
@@ -243,6 +249,7 @@ export class InterfaceValidator<A extends {}> extends Validator<A> {
     super(
       'interface',
       (u): u is A => inferfaceType.is(u),
+      inferfaceType.validate,
       (u) => inferfaceType.encode(u),
     );
 
