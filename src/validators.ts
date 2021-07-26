@@ -136,6 +136,15 @@ export class BooleanValidator extends Validator<boolean> {
     return c;
   }
 
+  booleanish() {
+    const c = this.clone(this);
+    c.validates = [
+      (input: unknown): Either<t.Errors, boolean> => 
+        t.success(input === 'true')
+    ];
+    return c;
+  }
+
   true(message?: string) {
     return this.refine((s) => s === true, message);
   }
