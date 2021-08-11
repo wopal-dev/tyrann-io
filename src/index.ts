@@ -5,7 +5,6 @@ import * as t from 'io-ts'
 import Axios from 'axios';
 import {
   createIdentityEncoder,
-  createJsonEncoder,
   createPathEncoder,
   createQueryEncoder,
 } from './codecs';
