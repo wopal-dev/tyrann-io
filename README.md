@@ -6,7 +6,7 @@
 
 > Yet another easy solution to keep your REST calls and data types in the same place (deprecating tyrann) 
 
-### 🏠 [Homepage](https://github.com/wopal-dev/tyrann-io)
+### 🏠 [Homepage](https://wopal-dev.github.io)
 
 ## Prerequisites
 
