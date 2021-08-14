@@ -1,6 +1,5 @@
-import { Either, isLeft, isRight } from 'fp-ts/lib/Either';
 import * as t from 'io-ts';
-import { ArrayValidator, BooleanValidator, InterfaceValidator, NumberValidator, StringValidator } from './validators';
+import { ArrayValidator, BooleanValidator, InterfaceValidator, NumberValidator, StringValidator, Validator } from './validators';
 
 export type OmittableKeys<A extends {}> = {
   [K in keyof A]: undefined extends A[K] ? K : null extends A[K] ? K : undefined
@@ -57,3 +56,5 @@ export const array = <C extends t.Mixed>(item: C) => new ArrayValidator(item);
 export const type = <P extends t.Props>(p: P) => new InterfaceValidator(t.type(p));
 
 export const boolean = () => new BooleanValidator();
+
+export { Validator } from './validators';

@@ -1,4 +1,4 @@
-import { Either, isLeft, isRight } from 'fp-ts/lib/Either';
+import { Either, isLeft } from 'fp-ts/lib/Either';
 import * as t from 'io-ts';
 import { Encode } from 'io-ts';
 
