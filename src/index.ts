@@ -8,7 +8,6 @@ import {
   createPathEncoder,
   createQueryEncoder,
 } from './codecs';
-import { PathReporter } from 'io-ts/PathReporter'
 
 export type TyrannOptions = {
   instance?: AxiosInstance;
@@ -121,7 +120,7 @@ export const tyrann = <Apis extends TyrannApis>(
     const decoder = operation.response[status]!;
     const decoded = decoder.decode(data);
     if (isLeft(decoded)) {
-      throw new BadResponse(decoded, `Invalid response data: ${PathReporter.report(decoded)}`);
+      throw new BadResponse(decoded, 'Invalid response data. ');
     }
 
     return {
