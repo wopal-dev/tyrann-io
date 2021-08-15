@@ -25,7 +25,7 @@ export class StatusNotHandled extends TyrannError {
 }
 
 export class BadResponse extends TyrannError {
-  constructor(public errors: t.Errors, ...args: any[]) {
+  constructor(public errors: t.Validation<any>, ...args: any[]) {
     super(...args);
     this.name = "BadResponse";
   }
@@ -121,7 +121,7 @@ export const tyrann = <Apis extends TyrannApis>(
     const decoder = operation.response[status]!;
     const decoded = decoder.decode(data);
     if (isLeft(decoded)) {
-      throw new BadResponse(decoded.left, `Invalid response data: ${PathReporter.report(decoded)}`);
+      throw new BadResponse(decoded, `Invalid response data: ${PathReporter.report(decoded)}`);
     }
 
     return {
