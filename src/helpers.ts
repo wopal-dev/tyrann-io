@@ -1,5 +1,5 @@
 import * as t from 'io-ts';
-import { ArrayValidator, BooleanValidator, InterfaceValidator, NumberValidator, StringValidator, Validator } from './validators';
+import { ArrayValidator, BooleanValidator, InterfaceValidator, NumberValidator, OmittableNumberValidator, StringValidator, Validator } from './validators';
 
 export type OmittableKeys<A extends {}> = {
   [K in keyof A]: undefined extends A[K] ? K : null extends A[K] ? K : undefined
@@ -48,6 +48,8 @@ export const omittable = <AType extends t.Any>(
 }
 
 export const number = () => new NumberValidator();
+
+export const omittableNumber = () => new OmittableNumberValidator();
 
 export const string = () => new StringValidator();
 

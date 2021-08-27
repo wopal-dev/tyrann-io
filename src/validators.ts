@@ -154,6 +154,53 @@ export class BooleanValidator extends Validator<boolean> {
   }
 }
 
+export class OmittableNumberValidator extends Validator<number | undefined> {
+  constructor() {
+    super(
+      'number',
+      (u): u is number | undefined => (typeof u === 'number' || u === undefined),
+      (u: number | undefined, context: t.Context) => (
+        (typeof u === 'number' || u === undefined) ? t.success(u) : t.failure(u, context)
+      ),
+      t.identity,
+    )
+  }
+
+  refine(refiner: (s: number | undefined) => boolean, message?: string): OmittableNumberValidator {
+    return super.refine(refiner, message) as OmittableNumberValidator;
+  }
+
+  clone(v: OmittableNumberValidator) {
+    const c = new OmittableNumberValidator();
+    c.validates = v.validates;
+    return c;
+  }
+
+  // Clear all validates, casting anything castable
+  cast(message?: string) {
+    const c = this.clone(this);
+    c.validates = [
+      (input: unknown, context: t.Context): Either<t.Errors, number | undefined> => 
+        !(typeof input === 'string' && input.trim() === '') && !Number.isNaN(Number(input))
+        ? t.success(Number(input))
+        : (
+          (typeof input === 'string' && input.trim() === '')
+          ? t.success(undefined)
+          : t.failure(input, context, message)
+        ),
+    ];
+    return c;
+  }
+
+  min(n: number , message?: string) {
+    return this.refine((s) => s === undefined || s >= n, message);
+  }
+
+  max(n: number, message?: string) {
+    return this.refine((s) => s === undefined || s <= n, message);
+  }
+}
+
 export class NumberValidator extends Validator<number> {
   constructor() {
     super(
@@ -180,6 +227,17 @@ export class NumberValidator extends Validator<number> {
     c.validates = [
       (input: unknown, context: t.Context): Either<t.Errors, number> => 
         !Number.isNaN(Number(input))
+        ? t.success(Number(input))
+        : t.failure(input, context, message),
+    ];
+    return c;
+  }
+
+  castString(message?: string) {
+    const c = this.clone(this);
+    c.validates = [
+      (input: unknown, context: t.Context): Either<t.Errors, number> => 
+        (typeof input === 'string' && !Number.isNaN(Number(input)) && input.trim() !== '')
         ? t.success(Number(input))
         : t.failure(input, context, message),
     ];

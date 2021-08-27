@@ -218,6 +218,35 @@ describe('helpers', () => {
         s: ''
       }))
     ).toBe(true);
+
+    const numberCastString = h.number().castString();
+
+    expect(
+      isRight(numberCastString.decode('114514'))
+    ).toBe(true);
+
+    expect(
+      isLeft(numberCastString.decode(''))
+    ).toBe(true);
+
+    const omittableNumber = h.omittableNumber().cast()
+
+    expect(
+      isRight(omittableNumber.decode(''))
+    ).toBe(true);
+
+    expect(
+      isRight(omittableNumber.decode('123123'))
+    ).toBe(true);
+
+    expect(
+      isRight(omittableNumber.decode('   '))
+    ).toBe(true);
+
+    expect(
+      isLeft(omittableNumber.decode('ABC'))
+    ).toBe(true);
+
   });
 
 });
