@@ -10,6 +10,9 @@ export class Validator<A> extends t.Type<A> {
       this.baseValidate(input, context),
   ];
 
+  label: string;
+  description: string;
+
   constructor(
     name: string,
     is: t.Is<A>,
@@ -23,7 +26,22 @@ export class Validator<A> extends t.Type<A> {
         return this.validateAll(u, c);
       },
       encode,
-    )
+    );
+
+    this.label = name;
+    this.description = '';
+  }
+
+  withLabel(label: string) {
+    const clone = this.clone(this);
+    clone.label = label;
+    return clone;
+  }
+
+  withDescription(description: string) {
+    const clone = this.clone(this);
+    clone.description = description;
+    return clone;
   }
 
   validateAll(u: unknown, c: t.Context) {
@@ -46,7 +64,7 @@ export class Validator<A> extends t.Type<A> {
       v.baseValidate,
       v.encode,
     );
-    c.validates = v.validates;
+    Object.assign(c, v);
     return c;
   }
   
@@ -75,7 +93,15 @@ export class StringValidator extends Validator<string> {
     )
   }
 
-  clone(v: StringValidator) {
+  withLabel(v: string): StringValidator {
+    return super.withLabel(v) as StringValidator;
+  }
+
+  withDescription(v: string): StringValidator {
+    return super.withDescription(v) as StringValidator;
+  }
+
+  clone(v: StringValidator)   {
     const c = new StringValidator();
     c.validates = v.validates;
     return c;
@@ -114,6 +140,14 @@ export class BooleanValidator extends Validator<boolean> {
       t.boolean.validate,
       t.identity,
     )
+  }
+
+  withLabel(v: string): BooleanValidator {
+    return super.withLabel(v) as BooleanValidator;
+  }
+
+  withDescription(v: string): BooleanValidator {
+    return super.withDescription(v) as BooleanValidator;
   }
 
   refine(refiner: (s: boolean) => boolean, message?: string): BooleanValidator {
@@ -166,6 +200,14 @@ export class OmittableNumberValidator extends Validator<number | undefined> {
     )
   }
 
+  withLabel(v: string): OmittableNumberValidator {
+    return super.withLabel(v) as OmittableNumberValidator;
+  }
+
+  withDescription(v: string): OmittableNumberValidator {
+    return super.withDescription(v) as OmittableNumberValidator;
+  }
+
   refine(refiner: (s: number | undefined) => boolean, message?: string): OmittableNumberValidator {
     return super.refine(refiner, message) as OmittableNumberValidator;
   }
@@ -209,6 +251,14 @@ export class NumberValidator extends Validator<number> {
       t.number.validate,
       t.identity,
     )
+  }
+
+  withLabel(v: string): NumberValidator {
+    return super.withLabel(v) as NumberValidator;
+  }
+
+  withDescription(v: string): NumberValidator {
+    return super.withDescription(v) as NumberValidator;
   }
 
   refine(refiner: (s: number) => boolean, message?: string): NumberValidator {
@@ -282,6 +332,14 @@ export class ArrayValidator<C extends t.Mixed> extends Validator<t.TypeOf<C>[]> 
     this.validates.push((u, c) => this.arrayType.validate(u, c));
   }
 
+  withLabel(v: string): ArrayValidator<C> {
+    return super.withLabel(v) as ArrayValidator<C>;
+  }
+
+  withDescription(v: string): ArrayValidator<C> {
+    return super.withDescription(v) as ArrayValidator<C>;
+  }
+  
   clone(v: ArrayValidator<C>) {
     const c = new ArrayValidator<C>(v.itemType);
     c.arrayType = v.arrayType;
@@ -321,6 +379,14 @@ export class InterfaceValidator<A extends {}> extends Validator<A> {
     );
 
     this.interfaceType = inferfaceType;
+  }
+
+  withLabel(v: string): InterfaceValidator<A> {
+    return super.withLabel(v) as InterfaceValidator<A>;
+  }
+
+  withDescription(v: string): InterfaceValidator<A> {
+    return super.withDescription(v) as InterfaceValidator<A>;
   }
 
   clone(v: InterfaceValidator<A>) {
