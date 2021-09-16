@@ -64,8 +64,15 @@ export class Validator<A> extends t.Type<A> {
       v.baseValidate,
       v.encode,
     );
-    Object.assign(c, v);
     return c;
+  }
+
+  inherit(v: Validator<A>) {
+    Object.assign(this, {
+      validates: v.validates,
+      label: v.label,
+      description: v.description,
+    });
   }
   
   extend(validate: Validate<A, any>): Validator<A> {
@@ -103,7 +110,7 @@ export class StringValidator extends Validator<string> {
 
   clone(v: StringValidator)   {
     const c = new StringValidator();
-    c.validates = v.validates;
+    c.inherit(v);
     return c;
   }
 
@@ -156,7 +163,7 @@ export class BooleanValidator extends Validator<boolean> {
 
   clone(v: BooleanValidator) {
     const c = new BooleanValidator();
-    c.validates = v.validates;
+    c.inherit(v);
     return c;
   }
 
@@ -214,7 +221,7 @@ export class OmittableNumberValidator extends Validator<number | undefined> {
 
   clone(v: OmittableNumberValidator) {
     const c = new OmittableNumberValidator();
-    c.validates = v.validates;
+    c.inherit(v);
     return c;
   }
 
@@ -267,7 +274,7 @@ export class NumberValidator extends Validator<number> {
 
   clone(v: NumberValidator) {
     const c = new NumberValidator();
-    c.validates = v.validates;
+    c.inherit(v);
     return c;
   }
 
@@ -342,9 +349,7 @@ export class ArrayValidator<C extends t.Mixed> extends Validator<t.TypeOf<C>[]> 
   
   clone(v: ArrayValidator<C>) {
     const c = new ArrayValidator<C>(v.itemType);
-    c.arrayType = v.arrayType;
-    c.itemType = v.itemType;
-    c.validates = v.validates;
+    c.inherit(v);
     return c;
   }
 
@@ -391,7 +396,7 @@ export class InterfaceValidator<A extends {}> extends Validator<A> {
 
   clone(v: InterfaceValidator<A>) {
     const c = new InterfaceValidator<A>(v.interfaceType);
-    c.validates = v.validates;
+    c.inherit(v);
     return c;
   }
 

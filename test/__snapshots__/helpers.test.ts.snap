@@ -19,8 +19,10 @@ Object {
           "type": StringValidator {
             "baseValidate": [Function],
             "decode": [Function],
+            "description": "",
             "encode": [Function],
             "is": [Function],
+            "label": "string",
             "name": "string",
             "validate": [Function],
             "validates": Array [
@@ -49,8 +51,10 @@ Object {
           "type": StringValidator {
             "baseValidate": [Function],
             "decode": [Function],
+            "description": "",
             "encode": [Function],
             "is": [Function],
+            "label": "string",
             "name": "string",
             "validate": [Function],
             "validates": Array [
@@ -95,8 +99,10 @@ Object {
           "type": NumberValidator {
             "baseValidate": [Function],
             "decode": [Function],
+            "description": "",
             "encode": [Function],
             "is": [Function],
+            "label": "number",
             "name": "number",
             "validate": [Function],
             "validates": Array [

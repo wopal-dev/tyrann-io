@@ -247,6 +247,18 @@ describe('helpers', () => {
       isLeft(omittableNumber.decode('ABC'))
     ).toBe(true);
 
+    expect(
+      h.string().withLabel('label').min(1).label
+    ).toBe('label');
+
+    expect(
+      h.number().withDescription('description').min(1).description
+    ).toBe('description');
+
+    expect(
+      h.boolean().withDescription('description').cast().description
+    ).toBe('description');
+
   });
 
 });
