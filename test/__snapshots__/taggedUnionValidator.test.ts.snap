@@ -1,0 +1,99 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TaggedUnionValidator can give correct context 1`] = `
+Object {
+  "_tag": "Left",
+  "left": Array [
+    Object {
+      "context": Array [
+        Object {
+          "actual": Object {
+            "tag": "WV",
+            "volume": 0,
+            "weight": 0,
+          },
+          "key": "",
+          "type": Validator {
+            "baseValidate": [Function],
+            "decode": [Function],
+            "description": "",
+            "encode": [Function],
+            "is": [Function],
+            "label": "taggedUnion",
+            "name": "taggedUnion",
+            "validate": [Function],
+            "validates": Array [
+              [Function],
+            ],
+          },
+        },
+        Object {
+          "actual": 0,
+          "key": "weight",
+          "type": NumberValidator {
+            "baseValidate": [Function],
+            "decode": [Function],
+            "description": "",
+            "encode": [Function],
+            "is": [Function],
+            "label": "number",
+            "name": "number",
+            "validate": [Function],
+            "validates": Array [
+              [Function],
+              [Function],
+            ],
+          },
+        },
+      ],
+      "message": "too small",
+      "value": 0,
+    },
+    Object {
+      "context": Array [
+        Object {
+          "actual": Object {
+            "tag": "WV",
+            "volume": 0,
+            "weight": 0,
+          },
+          "key": "",
+          "type": Validator {
+            "baseValidate": [Function],
+            "decode": [Function],
+            "description": "",
+            "encode": [Function],
+            "is": [Function],
+            "label": "taggedUnion",
+            "name": "taggedUnion",
+            "validate": [Function],
+            "validates": Array [
+              [Function],
+            ],
+          },
+        },
+        Object {
+          "actual": 0,
+          "key": "volume",
+          "type": NumberValidator {
+            "baseValidate": [Function],
+            "decode": [Function],
+            "description": "",
+            "encode": [Function],
+            "is": [Function],
+            "label": "number",
+            "name": "number",
+            "validate": [Function],
+            "validates": Array [
+              [Function],
+              [Function],
+            ],
+          },
+        },
+      ],
+      "message": "too small",
+      "value": 0,
+    },
+  ],
+}
+`;

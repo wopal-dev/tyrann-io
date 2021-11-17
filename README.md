@@ -243,7 +243,7 @@ Now, you have a typed result `data` and you can confidently believe it is matche
 3. `omittable`
 
     ```typescript
-    import { omittable } from 'tyrann-io/helpers';
+    import { omittable } from 'tyrann-io';
     const omittable = (a: t.Type): t.Type;
     ```
 
@@ -252,7 +252,7 @@ Now, you have a typed result `data` and you can confidently believe it is matche
 4. `defaultable`
 
     ```typescript
-    import { defaultable } from 'tyrann-io/helpers';
+    import { defaultable } from 'tyrann-io';
     const defaultable = (a: t.Any, placeholder: P): t.Type
     ```
 
@@ -276,7 +276,7 @@ Now, you have a typed result `data` and you can confidently believe it is matche
 
 5. `string`
     ```typescript
-    import { string } from 'tyrann-io/helpers';
+    import { string } from 'tyrann-io';
     const minLengthString = h
         .string()
         .min(5, 'Too short. ');
@@ -304,6 +304,25 @@ Now, you have a typed result `data` and you can confidently believe it is matche
     ```
     Check the string against `RegExp.test`.
 
+6. `taggedUnion`
+    ```typescript
+    import { taggedUnion } from 'tyrann-io';
+    const schema = taggedUnion([
+      {
+        tag: t.literal('LWH'),
+        length: number().min(5, 'too small'),
+        width: number().min(5, 'too small'),
+        height: number().min(5, 'too small'),
+      },
+      {
+        tag: t.literal('WV'),
+        weight: number().min(5, 'too small'),
+        volume: number().min(5, 'too small'),
+      },
+    ]);
+    ```
+
+    A special union type of structs tagged with constant strings. Useful if you have 'conditional form', e.g. the user can either input the length & width & height or weight & volume of the stuff, but for each situation all the fields are verified.
 
 ## Author
 

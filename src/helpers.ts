@@ -1,5 +1,5 @@
 import * as t from 'io-ts';
-import { ArrayValidator, BooleanValidator, InterfaceValidator, NumberValidator, OmittableNumberValidator, StringValidator, Validator } from './validators';
+import { ArrayValidator, BooleanValidator, InterfaceValidator, NumberValidator, OmittableNumberValidator, StringValidator, Validator } from './validators/basicValidators';
 
 export type OmittableKeys<A extends {}> = {
   [K in keyof A]: undefined extends A[K] ? K : null extends A[K] ? K : undefined
@@ -59,4 +59,6 @@ export const type = <P extends t.Props>(p: P) => new InterfaceValidator(t.type(p
 
 export const boolean = () => new BooleanValidator();
 
-export { Validator } from './validators';
+export { taggedUnion } from './validators/taggedUnion';
+
+export { Validator } from './validators/basicValidators';

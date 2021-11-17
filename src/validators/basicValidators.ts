@@ -370,15 +370,15 @@ export class ArrayValidator<C extends t.Mixed> extends Validator<t.TypeOf<C>[]> 
   }
 }
 
-export class InterfaceValidator<A extends {}> extends Validator<A> {
-  interfaceType: t.Type<A>;
+export class InterfaceValidator<P extends t.Props> extends Validator<t.TypeOf<t.TypeC<P>>> {
+  interfaceType: t.TypeC<P>;
 
   constructor(
-    inferfaceType: t.Type<A>,
+    inferfaceType: t.TypeC<P>,
   ) {
     super(
       'interface',
-      (u): u is A => inferfaceType.is(u),
+      (u): u is t.TypeOf<t.TypeC<P>> => inferfaceType.is(u),
       inferfaceType.validate,
       (u) => inferfaceType.encode(u),
     );
@@ -386,22 +386,22 @@ export class InterfaceValidator<A extends {}> extends Validator<A> {
     this.interfaceType = inferfaceType;
   }
 
-  withLabel(v: string): InterfaceValidator<A> {
-    return super.withLabel(v) as InterfaceValidator<A>;
+  withLabel(v: string): InterfaceValidator<P> {
+    return super.withLabel(v) as InterfaceValidator<P>;
   }
 
-  withDescription(v: string): InterfaceValidator<A> {
-    return super.withDescription(v) as InterfaceValidator<A>;
+  withDescription(v: string): InterfaceValidator<P> {
+    return super.withDescription(v) as InterfaceValidator<P>;
   }
 
-  clone(v: InterfaceValidator<A>) {
-    const c = new InterfaceValidator<A>(v.interfaceType);
+  clone(v: InterfaceValidator<P>) {
+    const c = new InterfaceValidator<P>(v.interfaceType);
     c.inherit(v);
     return c;
   }
 
-  refine(refiner: (s: A) => boolean, message?: string): InterfaceValidator<A> {
-    return super.refine(refiner, message) as InterfaceValidator<A>;
+  refine(refiner: (s: t.TypeOf<t.TypeC<P>>) => boolean, message?: string): InterfaceValidator<P> {
+    return super.refine(refiner, message) as InterfaceValidator<P>;
   }
 
 }
