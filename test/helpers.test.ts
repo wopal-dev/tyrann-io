@@ -248,6 +248,14 @@ describe('helpers', () => {
     ).toBe(true);
 
     expect(
+      isRight(omittableNumber.decode(undefined))
+    ).toBe(true);
+
+    expect(
+      isRight(omittableNumber.decode(null))
+    ).toBe(true);
+
+    expect(
       h.string().withLabel('label').min(1).label
     ).toBe('label');
 

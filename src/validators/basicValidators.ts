@@ -233,7 +233,8 @@ export class OmittableNumberValidator extends Validator<number | undefined> {
         !(typeof input === 'string' && input.trim() === '') && !Number.isNaN(Number(input))
         ? t.success(Number(input))
         : (
-          (typeof input === 'string' && input.trim() === '')
+          ((typeof input === 'string' && input.trim() === '') || input == null)
+          // Cast empty-like value to undefined
           ? t.success(undefined)
           : t.failure(input, context, message)
         ),
