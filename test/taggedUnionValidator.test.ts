@@ -38,6 +38,48 @@ describe('TaggedUnionValidator', () => {
       },
     ]);
 
+    const v4 = taggedUnion([
+      {
+        tag: t.literal('a'),
+        a: t.number,
+      },
+      {
+        tag: t.literal('b'),
+        b: t.number,
+      },
+      {
+        tag: t.literal('c'),
+        c: t.number,
+      },
+      {
+        tag: t.literal('d'),
+        d: t.number,
+      },
+    ]);
+
+    const v5 = taggedUnion([
+      {
+        tag: t.literal('a'),
+        a: t.number,
+      },
+      {
+        tag: t.literal('b'),
+        b: t.number,
+      },
+      {
+        tag: t.literal('c'),
+        c: t.number,
+      },
+      {
+        tag: t.literal('d'),
+        d: t.number,
+      },
+      {
+        tag: t.literal('e'),
+        e: t.number,
+      },
+    ]);
+
     expect(
       isRight(v1.decode({
         tag: 'a',
