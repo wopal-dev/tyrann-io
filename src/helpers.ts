@@ -1,4 +1,5 @@
 import * as t from 'io-ts';
+import { TyrannError } from '.';
 import { ArrayValidator, BooleanValidator, InterfaceValidator, NumberValidator, OmittableNumberValidator, StringValidator, Validator } from './validators/basicValidators';
 
 export type OmittableKeys<A extends {}> = {
@@ -62,3 +63,11 @@ export const boolean = () => new BooleanValidator();
 export { taggedUnion } from './validators/taggedUnion';
 
 export { Validator } from './validators/basicValidators';
+
+export const unwrap = <T>(validator: Validator<T>, value: unknown): T => {
+  const e = validator.decode(value);
+  if (e._tag === 'Left') {
+    throw new TyrannError('Failed to unwrap value');
+  }
+  return e.right;
+}
