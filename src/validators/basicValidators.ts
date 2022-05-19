@@ -1,3 +1,4 @@
+import { string } from 'fp-ts';
 import { Either, isLeft } from 'fp-ts/lib/Either';
 import * as t from 'io-ts';
 import { Encode } from 'io-ts';
@@ -136,6 +137,15 @@ export class StringValidator extends Validator<string> {
 
   matches(regExp: RegExp, message?: string) {
     return this.refine((s) => regExp.test(s), message);
+  }
+
+  cast(transform: (v: unknown) => string = String) {
+    const c = this.clone(this);
+    c.validates = [
+      (input: unknown): Either<t.Errors, string> => 
+        t.success(transform(input))
+    ];
+    return c;
   }
 }
 
