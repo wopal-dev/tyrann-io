@@ -143,7 +143,8 @@ export class StringValidator extends Validator<string> {
     const c = this.clone(this);
     c.validates = [
       (input: unknown): Either<t.Errors, string> => 
-        t.success(transform(input))
+        t.success(transform(input)),
+      t.string.validate,
     ];
     return c;
   }

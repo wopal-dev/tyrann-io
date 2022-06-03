@@ -64,7 +64,7 @@ export { taggedUnion } from './validators/taggedUnion';
 
 export { Validator } from './validators/basicValidators';
 
-export const unwrap = <T>(validator: Validator<T>, value: unknown): T => {
+export const unwrap = <T extends t.Any>(validator: T, value: unknown): t.TypeOf<T> => {
   const e = validator.decode(value);
   if (e._tag === 'Left') {
     throw new TyrannError('Failed to unwrap value');

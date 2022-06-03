@@ -39,7 +39,7 @@ describe('helpers', () => {
     const upperSchema = t.type({
       s: h
         .string()
-        .cast((s) => (typeof s === 'string' ? s.toUpperCase() : (s as any))),
+        .cast(s => (typeof s === 'string' ? s.toUpperCase() : (s as any))),
     });
 
     expect(
@@ -93,7 +93,10 @@ describe('helpers', () => {
 
     expect(isRight(minNumber.decode(101))).toBe(true);
 
-    const castNumber = h.number().cast().min(100);
+    const castNumber = h
+      .number()
+      .cast()
+      .min(100);
 
     expect(isRight(castNumber.decode('101'))).toBe(true);
 
@@ -147,7 +150,7 @@ describe('helpers', () => {
         a: t.number,
         b: t.number,
       })
-      .refine((s) => s.a === s.b);
+      .refine(s => s.a === s.b);
 
     expect(
       isRight(
@@ -173,7 +176,10 @@ describe('helpers', () => {
 
     expect(isRight(booleanType.decode(false))).toBe(false);
 
-    const castBooleanType = h.boolean().cast().true();
+    const castBooleanType = h
+      .boolean()
+      .cast()
+      .true();
 
     expect(isRight(castBooleanType.decode(1))).toBe(true);
 
@@ -215,14 +221,37 @@ describe('helpers', () => {
 
     expect(isRight(omittableNumber.decode(null))).toBe(true);
 
-    expect(h.string().withLabel('label').min(1).label).toBe('label');
+    expect(
+      h
+        .string()
+        .withLabel('label')
+        .min(1).label
+    ).toBe('label');
 
-    expect(h.number().withDescription('description').min(1).description).toBe(
-      'description'
-    );
+    expect(
+      h
+        .number()
+        .withDescription('description')
+        .min(1).description
+    ).toBe('description');
 
-    expect(h.boolean().withDescription('description').cast().description).toBe(
-      'description'
-    );
+    expect(
+      h
+        .boolean()
+        .withDescription('description')
+        .cast().description
+    ).toBe('description');
+
+    const castStringObject = t.type({
+      casted: h
+        .string()
+        .cast(v => (typeof v === 'string' ? v.trim() : (v as any)))
+        .min(1),
+    });
+
+    expect(isLeft(castStringObject.decode({}))).toBe(true);
+    expect(isLeft(castStringObject.decode({ casted: '   ' }))).toBe(true);
+
+    expect(isRight(castStringObject.decode({ casted: 'ok' }))).toBe(true);
   });
 });
