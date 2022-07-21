@@ -17,14 +17,24 @@ export type TyrannOptions = {
 export class TyrannError extends Error {}
 
 export class StatusNotHandled extends TyrannError {
-  constructor(public status: number, ...args: any) {
+  constructor(
+    public status: number,
+    public request?: AxiosRequestConfig,
+    public response?: AxiosResponse,
+    ...args: any[]
+  ) {
     super(...args);
     this.name = "StatusNotHandled";
   }
 }
 
 export class BadResponse extends TyrannError {
-  constructor(public errors: t.Validation<any>, ...args: any[]) {
+  constructor(
+    public errors: t.Validation<any>,
+    public request?: AxiosRequestConfig,
+    public response?: AxiosResponse,
+    ...args: any[]
+  ) {
     super(...args);
     this.name = "BadResponse";
   }
@@ -114,13 +124,13 @@ export const tyrann = <Apis extends TyrannApis>(
     const { status, data } = response;
 
     if (!(status in operation.response)) {
-      throw new StatusNotHandled(response.status, `Status ${response.status} is not handled. `);
+      throw new StatusNotHandled(response.status, localAxiosRequestConfigs, response, `Status ${response.status} is not handled. `);
     }
 
     const decoder = operation.response[status]!;
     const decoded = decoder.decode(data);
     if (isLeft(decoded)) {
-      throw new BadResponse(decoded, 'Invalid response data. ');
+      throw new BadResponse(decoded, localAxiosRequestConfigs, response, 'Invalid response data. ');
     }
 
     return {
