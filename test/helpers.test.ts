@@ -221,6 +221,13 @@ describe('helpers', () => {
 
     expect(isRight(omittableNumber.decode(null))).toBe(true);
 
+    expect(h.unwrap(omittableNumber, null)).toBe(undefined);
+    expect(h.unwrap(omittableNumber, undefined)).toBe(undefined);
+    expect(h.unwrap(omittableNumber, '123')).toBe(123);
+    expect(h.unwrap(omittableNumber, 123)).toBe(123);
+    expect(h.unwrap(omittableNumber, 0)).toBe(0);
+    expect(h.unwrap(omittableNumber, "1.23")).toBe(1.23);
+
     expect(
       h
         .string()

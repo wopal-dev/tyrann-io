@@ -241,7 +241,7 @@ export class OmittableNumberValidator extends Validator<number | undefined> {
     const c = this.clone(this);
     c.validates = [
       (input: unknown, context: t.Context): Either<t.Errors, number | undefined> => 
-        !(typeof input === 'string' && input.trim() === '') && !Number.isNaN(Number(input))
+        !(typeof input === 'string' && input.trim() === '') && (input != null && !Number.isNaN(Number(input)))
         ? t.success(Number(input))
         : (
           ((typeof input === 'string' && input.trim() === '') || input == null)
