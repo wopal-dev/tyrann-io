@@ -55,6 +55,22 @@ T5 extends string,
 P5 extends t.Props,
 >(args: [TaggedProps<T1, P1>, TaggedProps<T2, P2>, TaggedProps<T3, P3>, TaggedProps<T4, P4>, TaggedProps<T5, P5>]): Validator<TypeOf<T1, P1> | TypeOf<T2, P2> | TypeOf<T3, P3> | TypeOf<T4, P4> | TypeOf<T5, P5>>;
 
+export function taggedUnion<
+T1 extends string,
+P1 extends t.Props,
+T2 extends string,
+P2 extends t.Props,
+T3 extends string,
+P3 extends t.Props,
+T4 extends string,
+P4 extends t.Props,
+T5 extends string,
+P5 extends t.Props,
+T6 extends string,
+P6 extends t.Props,
+>(args: [TaggedProps<T1, P1>, TaggedProps<T2, P2>, TaggedProps<T3, P3>, TaggedProps<T4, P4>, TaggedProps<T5, P5>, TaggedProps<T6, P6>]): Validator<TypeOf<T1, P1> | TypeOf<T2, P2> | TypeOf<T3, P3> | TypeOf<T4, P4> | TypeOf<T5, P5> | TypeOf<T6, P6>>;
+
+
 export function taggedUnion(union: TaggedProps<any, any>[]) {
   return new Validator<TaggedProps<any, any>>(
     'taggedUnion',
