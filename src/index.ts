@@ -9,9 +9,27 @@ import {
   createQueryEncoder,
 } from './codecs';
 
+export type TyrannMiddlewareCallAction = {
+  type: string;
+  name: string;
+  method: BaseMethods;
+  request: Request;
+};
+
+export type TyrannMiddlewareReturnType = {
+  response: AxiosResponse<any>,
+} & ResponseOf<Operation>;
+
+export type TyrannMiddleware = (
+  callAction: TyrannMiddlewareCallAction,
+  localOptions: TyrannOptions, 
+  next: () => Promise<TyrannMiddlewareReturnType>,
+) => Promise<TyrannMiddlewareReturnType>;
+
 export type TyrannOptions = {
   instance?: AxiosInstance;
   axiosRequestConfig?: AxiosRequestConfig | (() => AxiosRequestConfig);
+  middlewares?: TyrannMiddleware[];
 }
 
 export class TyrannError extends Error {}
@@ -75,7 +93,7 @@ export const tyrann = <Apis extends TyrannApis>(
   const call = async <Name extends Names, Path extends Apis[Name], Methods extends MethodsOf<Path>>(
     callAction: CallAction<Name, Path, Methods>,
     localOptions: TyrannOptions = options, 
-  ) => {
+  ): Promise<CallResponse<Exclude<Path[Methods], undefined>>> => {
     const {
       method,
       name,
@@ -138,7 +156,7 @@ export const tyrann = <Apis extends TyrannApis>(
       ...{
         [status]: decoded.right,
       },
-    } as CallResponse<Exclude<Path[Methods], undefined>>;
+    } as any;
   };
 
   const withMethod = <Method extends BaseMethods>(m: Method) =>
@@ -146,15 +164,29 @@ export const tyrann = <Apis extends TyrannApis>(
       name: Name,
       request: RequestOf<Exclude<Path[Method], undefined>>,
       localOptions: TyrannOptions = options, 
-    ) => {
-      return call(
-        createCall(
-          m,
-          name,
-          request,
+    ): Promise<CallResponse<Exclude<Path[Method], undefined>>> => {
+
+      const callAction =  createCall(
+        m,
+        name,
+        request,
+      );
+
+      const middlewares = [
+        ...(localOptions.middlewares ?? []),
+        () => call(
+          callAction,
+          localOptions,
         ),
-        localOptions,
-      )
+      ];
+
+      const callMiddlewares = async (i: number): Promise<any> => {
+        const current = middlewares[i];
+
+        return current(callAction, localOptions, () => callMiddlewares(i + 1));
+      };
+
+      return callMiddlewares(0);
     };
 
   return {
