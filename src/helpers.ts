@@ -2,12 +2,12 @@ import * as t from 'io-ts';
 import { TyrannError } from '.';
 import { ArrayValidator, BooleanValidator, InterfaceValidator, NumberValidator, OmittableNumberValidator, StringValidator, Validator } from './validators/basicValidators';
 
-export type OmittableKeys<A extends {}> = {
+export type OmittableKeys<A extends any> = {
   [K in keyof A]: undefined extends A[K] ? K : null extends A[K] ? K : undefined
 }[keyof A] & string;
 
 
-export type Defaultable<A extends {}> = {
+export type Defaultable<A extends any> = {
   [K in keyof A & OmittableKeys<A>]?:  A[K]
 } & {
   [K in Exclude<keyof A, OmittableKeys<A>>]:  A[K]
