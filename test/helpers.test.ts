@@ -189,6 +189,14 @@ describe('helpers', () => {
 
     expect(isRight(castBooleanType.decode(''))).toBe(false);
 
+    expect(h.unwrap(h.boolean().cast(), 'true')).toBe(true);
+    expect(h.unwrap(h.boolean().cast(), 'false')).toBe(false);
+    expect(h.unwrap(h.boolean().cast(), '')).toBe(false);
+    expect(h.unwrap(h.boolean().cast(), null)).toBe(false);
+    expect(h.unwrap(h.boolean().cast(), undefined)).toBe(false);
+    expect(h.unwrap(h.boolean().cast(), {})).toBe(true);
+    expect(h.unwrap(h.boolean().cast(), [])).toBe(true);
+
     const requiredStringInterfaceType = h.type({
       s: h.string().required('required'),
     });

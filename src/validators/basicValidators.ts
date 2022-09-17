@@ -183,7 +183,7 @@ export class BooleanValidator extends Validator<boolean> {
     const c = this.clone(this);
     c.validates = [
       (input: unknown): Either<t.Errors, boolean> => 
-        t.success(Boolean(input))
+        t.success(typeof input === 'string' ? input !== 'false' && input !== '' : Boolean(input))
     ];
     return c;
   }
