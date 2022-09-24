@@ -1,6 +1,7 @@
 import { isLeft, isRight } from 'fp-ts/lib/These';
 import * as t from 'io-ts';
 import * as h from '../src/helpers';
+import { OmittableStringValidator } from '../src/validators/basicValidators';
 
 const emailRegex = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/g;
 
@@ -234,7 +235,7 @@ describe('helpers', () => {
     expect(h.unwrap(omittableNumber, '123')).toBe(123);
     expect(h.unwrap(omittableNumber, 123)).toBe(123);
     expect(h.unwrap(omittableNumber, 0)).toBe(0);
-    expect(h.unwrap(omittableNumber, "1.23")).toBe(1.23);
+    expect(h.unwrap(omittableNumber, '1.23')).toBe(1.23);
 
     expect(
       h
@@ -268,5 +269,26 @@ describe('helpers', () => {
     expect(isLeft(castStringObject.decode({ casted: '   ' }))).toBe(true);
 
     expect(isRight(castStringObject.decode({ casted: 'ok' }))).toBe(true);
+
+    {
+      const omittableString = new OmittableStringValidator();
+
+      expect(isRight(omittableString.decode('string'))).toBe(true);
+      expect(isRight(omittableString.decode(undefined))).toBe(true);
+      expect(isRight(omittableString.decode(123))).toBe(false);
+      expect(isRight(omittableString.decode({}))).toBe(false);
+      expect(isRight(omittableString.decode(null))).toBe(false);
+
+      expect(isRight(omittableString.min(5).decode(undefined))).toBe(true);
+      expect(isRight(omittableString.min(5).decode('123'))).toBe(false);
+
+      expect(h.unwrap(omittableString.cast(), '')).toBe(undefined);
+      expect(h.unwrap(omittableString.cast(), undefined)).toBe(undefined);
+      expect(h.unwrap(omittableString.cast(), null)).toBe(undefined);
+      expect(h.unwrap(omittableString.cast(), 'string')).toBe('string');
+      expect(h.unwrap(omittableString.cast(), '123')).toBe('123');
+      expect(h.unwrap(omittableString.cast(), {})).toBe(String({}));
+      expect(h.unwrap(omittableString.cast(), false)).toBe('false');
+    }
   });
 });

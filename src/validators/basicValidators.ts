@@ -3,11 +3,14 @@ import { Either, isLeft } from 'fp-ts/lib/Either';
 import * as t from 'io-ts';
 import { Encode } from 'io-ts';
 
-export type Validate<A, I> = (input: I, context: t.Context) => Either<t.Errors, A>; 
+export type Validate<A, I> = (
+  input: I,
+  context: t.Context
+) => Either<t.Errors, A>;
 
 export class Validator<A> extends t.Type<A> {
   validates: Validate<A, any>[] = [
-    (input: unknown, context: t.Context): Either<t.Errors, A> => 
+    (input: unknown, context: t.Context): Either<t.Errors, A> =>
       this.baseValidate(input, context),
   ];
 
@@ -26,7 +29,7 @@ export class Validator<A> extends t.Type<A> {
       (u, c) => {
         return this.validateAll(u, c);
       },
-      encode,
+      encode
     );
 
     this.label = name;
@@ -59,12 +62,7 @@ export class Validator<A> extends t.Type<A> {
   }
 
   clone(v: Validator<A>) {
-    const c = new Validator(
-      v.name,
-      v.is,
-      v.baseValidate,
-      v.encode,
-    );
+    const c = new Validator(v.name, v.is, v.baseValidate, v.encode);
     return c;
   }
 
@@ -75,7 +73,7 @@ export class Validator<A> extends t.Type<A> {
       description: v.description,
     });
   }
-  
+
   extend(validate: Validate<A, any>): Validator<A> {
     const clone = this.clone(this);
     clone.validates = [...this.validates, validate];
@@ -83,11 +81,9 @@ export class Validator<A> extends t.Type<A> {
   }
 
   refine(refiner: (s: A) => boolean, message?: string) {
-    return this.extend(
-      (input: A, context) => refiner(input)
-        ? t.success(input)
-        : t.failure(input, context, message),
-    )
+    return this.extend((input: A, context) =>
+      refiner(input) ? t.success(input) : t.failure(input, context, message)
+    );
   }
 }
 
@@ -97,8 +93,8 @@ export class StringValidator extends Validator<string> {
       'string',
       (u): u is string => typeof u === 'string',
       t.string.validate,
-      t.identity,
-    )
+      t.identity
+    );
   }
 
   withLabel(v: string): StringValidator {
@@ -109,7 +105,7 @@ export class StringValidator extends Validator<string> {
     return super.withDescription(v) as StringValidator;
   }
 
-  clone(v: StringValidator)   {
+  clone(v: StringValidator) {
     const c = new StringValidator();
     c.inherit(v);
     return c;
@@ -120,7 +116,7 @@ export class StringValidator extends Validator<string> {
   }
 
   length(n: number, message?: string) {
-    return this.refine((s) => s.length === n, message);
+    return this.refine(s => s.length === n, message);
   }
 
   required(message?: string) {
@@ -128,22 +124,21 @@ export class StringValidator extends Validator<string> {
   }
 
   max(n: number, message?: string) {
-    return this.refine((s) => s.length <= n, message);
+    return this.refine(s => s.length <= n, message);
   }
 
   min(n: number, message?: string) {
-    return this.refine((s) => s.length >= n, message);
+    return this.refine(s => s.length >= n, message);
   }
 
   matches(regExp: RegExp, message?: string) {
-    return this.refine((s) => regExp.test(s), message);
+    return this.refine(s => regExp.test(s), message);
   }
 
   cast(transform: (v: unknown) => string = String) {
     const c = this.clone(this);
     c.validates = [
-      (input: unknown): Either<t.Errors, string> => 
-        t.success(transform(input)),
+      (input: unknown): Either<t.Errors, string> => t.success(transform(input)),
       t.string.validate,
     ];
     return c;
@@ -156,8 +151,8 @@ export class BooleanValidator extends Validator<boolean> {
       'number',
       (u): u is boolean => typeof u === 'boolean',
       t.boolean.validate,
-      t.identity,
-    )
+      t.identity
+    );
   }
 
   withLabel(v: string): BooleanValidator {
@@ -182,8 +177,12 @@ export class BooleanValidator extends Validator<boolean> {
   cast() {
     const c = this.clone(this);
     c.validates = [
-      (input: unknown): Either<t.Errors, boolean> => 
-        t.success(typeof input === 'string' ? input !== 'false' && input !== '' : Boolean(input))
+      (input: unknown): Either<t.Errors, boolean> =>
+        t.success(
+          typeof input === 'string'
+            ? input !== 'false' && input !== ''
+            : Boolean(input)
+        ),
     ];
     return c;
   }
@@ -191,18 +190,22 @@ export class BooleanValidator extends Validator<boolean> {
   booleanish() {
     const c = this.clone(this);
     c.validates = [
-      (input: unknown, context): Either<t.Errors, boolean> => 
-        input === 'true' ? t.success(true) : input === 'false' ? t.success(false) : t.failure(input, context),
+      (input: unknown, context): Either<t.Errors, boolean> =>
+        input === 'true'
+          ? t.success(true)
+          : input === 'false'
+          ? t.success(false)
+          : t.failure(input, context),
     ];
     return c;
   }
 
   true(message?: string) {
-    return this.refine((s) => s === true, message);
+    return this.refine(s => s === true, message);
   }
 
   false(message?: string) {
-    return this.refine((s) => s === false, message);
+    return this.refine(s => s === false, message);
   }
 }
 
@@ -210,12 +213,13 @@ export class OmittableNumberValidator extends Validator<number | undefined> {
   constructor() {
     super(
       'number',
-      (u): u is number | undefined => (typeof u === 'number' || u === undefined),
-      (u: number | undefined, context: t.Context) => (
-        (typeof u === 'number' || u === undefined) ? t.success(u) : t.failure(u, context)
-      ),
-      t.identity,
-    )
+      (u): u is number | undefined => typeof u === 'number' || u === undefined,
+      (u: number | undefined, context: t.Context) =>
+        typeof u === 'number' || u === undefined
+          ? t.success(u)
+          : t.failure(u, context),
+      t.identity
+    );
   }
 
   withLabel(v: string): OmittableNumberValidator {
@@ -226,7 +230,10 @@ export class OmittableNumberValidator extends Validator<number | undefined> {
     return super.withDescription(v) as OmittableNumberValidator;
   }
 
-  refine(refiner: (s: number | undefined) => boolean, message?: string): OmittableNumberValidator {
+  refine(
+    refiner: (s: number | undefined) => boolean,
+    message?: string
+  ): OmittableNumberValidator {
     return super.refine(refiner, message) as OmittableNumberValidator;
   }
 
@@ -240,25 +247,28 @@ export class OmittableNumberValidator extends Validator<number | undefined> {
   cast(message?: string) {
     const c = this.clone(this);
     c.validates = [
-      (input: unknown, context: t.Context): Either<t.Errors, number | undefined> => 
-        !(typeof input === 'string' && input.trim() === '') && (input != null && !Number.isNaN(Number(input)))
-        ? t.success(Number(input))
-        : (
-          ((typeof input === 'string' && input.trim() === '') || input == null)
-          // Cast empty-like value to undefined
-          ? t.success(undefined)
-          : t.failure(input, context, message)
-        ),
+      (
+        input: unknown,
+        context: t.Context
+      ): Either<t.Errors, number | undefined> =>
+        !(typeof input === 'string' && input.trim() === '') &&
+        input != null &&
+        !Number.isNaN(Number(input))
+          ? t.success(Number(input))
+          : (typeof input === 'string' && input.trim() === '') || input == null
+          ? // Cast empty-like value to undefined
+            t.success(undefined)
+          : t.failure(input, context, message),
     ];
     return c;
   }
 
-  min(n: number , message?: string) {
-    return this.refine((s) => s === undefined || s >= n, message);
+  min(n: number, message?: string) {
+    return this.refine(s => s === undefined || s >= n, message);
   }
 
   max(n: number, message?: string) {
-    return this.refine((s) => s === undefined || s <= n, message);
+    return this.refine(s => s === undefined || s <= n, message);
   }
 }
 
@@ -268,8 +278,8 @@ export class NumberValidator extends Validator<number> {
       'number',
       (u): u is number => typeof u === 'number',
       t.number.validate,
-      t.identity,
-    )
+      t.identity
+    );
   }
 
   withLabel(v: string): NumberValidator {
@@ -294,10 +304,10 @@ export class NumberValidator extends Validator<number> {
   cast(message?: string) {
     const c = this.clone(this);
     c.validates = [
-      (input: unknown, context: t.Context): Either<t.Errors, number> => 
+      (input: unknown, context: t.Context): Either<t.Errors, number> =>
         !Number.isNaN(Number(input))
-        ? t.success(Number(input))
-        : t.failure(input, context, message),
+          ? t.success(Number(input))
+          : t.failure(input, context, message),
     ];
     return c;
   }
@@ -305,36 +315,40 @@ export class NumberValidator extends Validator<number> {
   castString(message?: string) {
     const c = this.clone(this);
     c.validates = [
-      (input: unknown, context: t.Context): Either<t.Errors, number> => 
-        (typeof input === 'string' && !Number.isNaN(Number(input)) && input.trim() !== '')
-        ? t.success(Number(input))
-        : t.failure(input, context, message),
+      (input: unknown, context: t.Context): Either<t.Errors, number> =>
+        typeof input === 'string' &&
+        !Number.isNaN(Number(input)) &&
+        input.trim() !== ''
+          ? t.success(Number(input))
+          : t.failure(input, context, message),
     ];
     return c;
   }
 
   min(n: number, message?: string) {
-    return this.refine((s) => s >= n, message);
+    return this.refine(s => s >= n, message);
   }
 
   max(n: number, message?: string) {
-    return this.refine((s) => s <= n, message);
+    return this.refine(s => s <= n, message);
   }
 
   positive(message?: string) {
-    return this.refine((s) => s > 0, message);
+    return this.refine(s => s > 0, message);
   }
 
   negative(message?: string) {
-    return this.refine((s) => s < 0, message);
+    return this.refine(s => s < 0, message);
   }
 
   integer(message?: string) {
-    return this.refine((s) => Number.isSafeInteger(s), message);
+    return this.refine(s => Number.isSafeInteger(s), message);
   }
 }
 
-export class ArrayValidator<C extends t.Mixed> extends Validator<t.TypeOf<C>[]> {
+export class ArrayValidator<C extends t.Mixed> extends Validator<
+  t.TypeOf<C>[]
+> {
   arrayType: t.ArrayType<C>;
   itemType: C;
 
@@ -343,7 +357,7 @@ export class ArrayValidator<C extends t.Mixed> extends Validator<t.TypeOf<C>[]> 
       `array<${item.name}>`,
       (u): u is Array<t.TypeOf<C>> => this.arrayType.is(u),
       t.array(item).validate,
-      (u) => this.arrayType.encode(u),
+      u => this.arrayType.encode(u)
     );
 
     this.itemType = item;
@@ -358,23 +372,26 @@ export class ArrayValidator<C extends t.Mixed> extends Validator<t.TypeOf<C>[]> 
   withDescription(v: string): ArrayValidator<C> {
     return super.withDescription(v) as ArrayValidator<C>;
   }
-  
+
   clone(v: ArrayValidator<C>) {
     const c = new ArrayValidator<C>(v.itemType);
     c.inherit(v);
     return c;
   }
 
-  refine(refiner: (s: t.TypeOf<C>[]) => boolean, message?: string): ArrayValidator<C> {
+  refine(
+    refiner: (s: t.TypeOf<C>[]) => boolean,
+    message?: string
+  ): ArrayValidator<C> {
     return super.refine(refiner, message) as ArrayValidator<C>;
   }
 
   min(n: number, message?: string) {
-    return this.refine((s) => s.length >= n, message);
+    return this.refine(s => s.length >= n, message);
   }
 
   max(n: number, message?: string) {
-    return this.refine((s) => s.length <= n, message);
+    return this.refine(s => s.length <= n, message);
   }
 
   required(message?: string) {
@@ -382,17 +399,17 @@ export class ArrayValidator<C extends t.Mixed> extends Validator<t.TypeOf<C>[]> 
   }
 }
 
-export class InterfaceValidator<P extends t.Props> extends Validator<t.TypeOf<t.TypeC<P>>> {
+export class InterfaceValidator<P extends t.Props> extends Validator<
+  t.TypeOf<t.TypeC<P>>
+> {
   interfaceType: t.TypeC<P>;
 
-  constructor(
-    inferfaceType: t.TypeC<P>,
-  ) {
+  constructor(inferfaceType: t.TypeC<P>) {
     super(
       'interface',
       (u): u is t.TypeOf<t.TypeC<P>> => inferfaceType.is(u),
       inferfaceType.validate,
-      (u) => inferfaceType.encode(u),
+      u => inferfaceType.encode(u)
     );
 
     this.interfaceType = inferfaceType;
@@ -412,8 +429,82 @@ export class InterfaceValidator<P extends t.Props> extends Validator<t.TypeOf<t.
     return c;
   }
 
-  refine(refiner: (s: t.TypeOf<t.TypeC<P>>) => boolean, message?: string): InterfaceValidator<P> {
+  refine(
+    refiner: (s: t.TypeOf<t.TypeC<P>>) => boolean,
+    message?: string
+  ): InterfaceValidator<P> {
     return super.refine(refiner, message) as InterfaceValidator<P>;
   }
+}
 
+export class OmittableStringValidator extends Validator<string | undefined> {
+  constructor() {
+    super(
+      'string',
+      (u): u is string | undefined =>
+        typeof u === 'string' || typeof u === 'undefined',
+      (u: string | undefined, context: t.Context) =>
+        typeof u === 'string' || typeof u === 'undefined'
+          ? t.success(u)
+          : t.failure(u, context),
+      t.identity
+    );
+  }
+
+  withLabel(v: string): OmittableStringValidator {
+    return super.withLabel(v) as OmittableStringValidator;
+  }
+
+  withDescription(v: string): OmittableStringValidator {
+    return super.withDescription(v) as OmittableStringValidator;
+  }
+
+  clone(v: OmittableStringValidator) {
+    const c = new OmittableStringValidator();
+    c.inherit(v);
+    return c;
+  }
+
+  refine(
+    refiner: (s: string | undefined) => boolean,
+    message?: string
+  ): OmittableStringValidator {
+    return super.refine(refiner, message) as OmittableStringValidator;
+  }
+
+  length(n: number, message?: string) {
+    return this.refine(s => typeof s === 'string' ? s.length === n : true, message);
+  }
+
+  required(message?: string) {
+    return this.min(1, message);
+  }
+
+  max(n: number, message?: string) {
+    return this.refine(s => typeof s === 'string' ? s.length <= n : true, message);
+  }
+
+  min(n: number, message?: string) {
+    return this.refine(s => typeof s === 'string' ? s.length >= n : true, message);
+  }
+
+  matches(regExp: RegExp, message?: string) {
+    return this.refine(s => typeof s === 'string' ? regExp.test(s) : true, message);
+  }
+
+  static defaultCastTransform(v: unknown): string | undefined {
+    if (v == null || (typeof v === 'string' && v.trim() === ''))
+      return undefined;
+    return String(v);
+  }
+
+  cast(transform: (v: unknown) => string | undefined = OmittableStringValidator.defaultCastTransform) {
+    const c = this.clone(this);
+    c.validates = [
+      (input: unknown): Either<t.Errors, string | undefined> =>
+        t.success(transform(input)),
+      this.baseValidate,
+    ];
+    return c;
+  }
 }
