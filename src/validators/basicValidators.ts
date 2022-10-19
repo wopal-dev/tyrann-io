@@ -325,6 +325,20 @@ export class NumberValidator extends Validator<number> {
     return c;
   }
 
+  castInput(message?: string) {
+    const c = this.clone(this);
+    c.validates = [
+      (input: unknown, context: t.Context): Either<t.Errors, number> =>
+        typeof input === 'number' && !Number.isNaN(input) ||
+        (typeof input === 'string' &&
+          !Number.isNaN(Number(input)) &&
+          input.trim() !== '')
+          ? t.success(Number(input))
+          : t.failure(input, context, message),
+    ];
+    return c;
+  }
+
   min(n: number, message?: string) {
     return this.refine(s => s >= n, message);
   }
@@ -473,7 +487,10 @@ export class OmittableStringValidator extends Validator<string | undefined> {
   }
 
   length(n: number, message?: string) {
-    return this.refine(s => typeof s === 'string' ? s.length === n : true, message);
+    return this.refine(
+      s => (typeof s === 'string' ? s.length === n : true),
+      message
+    );
   }
 
   required(message?: string) {
@@ -481,15 +498,24 @@ export class OmittableStringValidator extends Validator<string | undefined> {
   }
 
   max(n: number, message?: string) {
-    return this.refine(s => typeof s === 'string' ? s.length <= n : true, message);
+    return this.refine(
+      s => (typeof s === 'string' ? s.length <= n : true),
+      message
+    );
   }
 
   min(n: number, message?: string) {
-    return this.refine(s => typeof s === 'string' ? s.length >= n : true, message);
+    return this.refine(
+      s => (typeof s === 'string' ? s.length >= n : true),
+      message
+    );
   }
 
   matches(regExp: RegExp, message?: string) {
-    return this.refine(s => typeof s === 'string' ? regExp.test(s) : true, message);
+    return this.refine(
+      s => (typeof s === 'string' ? regExp.test(s) : true),
+      message
+    );
   }
 
   static defaultCastTransform(v: unknown): string | undefined {
@@ -498,7 +524,11 @@ export class OmittableStringValidator extends Validator<string | undefined> {
     return String(v);
   }
 
-  cast(transform: (v: unknown) => string | undefined = OmittableStringValidator.defaultCastTransform) {
+  cast(
+    transform: (
+      v: unknown
+    ) => string | undefined = OmittableStringValidator.defaultCastTransform
+  ) {
     const c = this.clone(this);
     c.validates = [
       (input: unknown): Either<t.Errors, string | undefined> =>

@@ -216,6 +216,14 @@ describe('helpers', () => {
 
     expect(isLeft(numberCastString.decode(''))).toBe(true);
 
+    const numberCastInput = h.number().castInput();
+
+    expect(isRight(numberCastInput.decode('114514'))).toBe(true);
+    expect(isRight(numberCastInput.decode('0'))).toBe(true);
+    expect(isRight(numberCastInput.decode(0))).toBe(true);
+    expect(isLeft(numberCastInput.decode(''))).toBe(true);
+    expect(isLeft(numberCastInput.decode('xyz'))).toBe(true);
+
     const omittableNumber = h.omittableNumber().cast();
 
     expect(isRight(omittableNumber.decode(''))).toBe(true);
